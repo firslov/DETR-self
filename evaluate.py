@@ -1,4 +1,3 @@
-from models import build_model
 from PIL import Image
 import matplotlib.pyplot as plt
 
@@ -16,7 +15,7 @@ with open('config.yaml', 'r') as loadfile:
 # evaluate mode
 cfg = cfg_all[1]
 
-detr = build_model(cfg)
+detr = build_evaluate(cfg)
 detr.load_state_dict(torch.load('wt.pt', map_location='cpu'))
 detr.eval()
 
@@ -83,7 +82,7 @@ def detect(im, model, transform):
     return probas[keep], bboxes_scaled
 
 
-url = 'train/000030.jpg'
+url = '../train/000030.jpg'
 im = Image.open(url)
 
 scores, boxes = detect(im, detr, transform)

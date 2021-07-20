@@ -87,7 +87,7 @@ class Backbone(BackboneBase):
                  dilation: bool):
         backbone = getattr(torchvision.models, name)(
             replace_stride_with_dilation=[False, False, dilation],
-            pretrained=True, norm_layer=FrozenBatchNorm2d)
+            pretrained=train_backbone, norm_layer=FrozenBatchNorm2d)
         num_channels = 512 if name in ('resnet18', 'resnet34') else 2048
         super().__init__(backbone, train_backbone, num_channels)
 
@@ -110,7 +110,7 @@ class Joiner(nn.Sequential):
 
 def build_backbone(cfg):
     position_embedding = build_position_encoding(cfg)
-    train_backbone = cfg['lr_backbone'] > 0
+    train_backbone = cfg['mode']=='train' and not cfg['resume']
     backbone = Backbone(cfg['backbone'], train_backbone, cfg['dilation'])
     model = Joiner(backbone, position_embedding)
     model.num_channels = backbone.num_channels

@@ -3,6 +3,7 @@
 ###
 # train mode
 ###
+mode: train
 lr: !!float 1e-4
 lr_backbone: !!float 1e-5
 batch_size: 10
@@ -51,6 +52,7 @@ num_workers: 3
 ###
 # evaluate mode
 ###
+mode: eval
 # backbone
 backbone: resnet50
 dilation: False
@@ -64,21 +66,5 @@ dropout: 0.1
 nheads: 8
 num_queries: 10
 pre_norm: False
-# loss
-no_aux_loss: False
-# matcher
-set_cost_class: 1.
-set_cost_bbox: 5.
-set_cost_giou: 2.
-# loss coefficeints
-dice_loss_coef: 1.
-bbox_loss_coef: 5.
-giou_loss_coef: 2.
-eos_coef: 0.1
 # dataset parameters
-output_dir: ''
 device: 'cuda'
-seed: 42
-resume: False
-start_epoch: 0
-num_workers: 0

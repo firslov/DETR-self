@@ -311,7 +311,6 @@ def build_evaluate(cfg):
         transformer,
         num_classes=num_classes,
         num_queries=cfg['num_queries'],
-        aux_loss=cfg['aux_loss'],
     )
 
     return model

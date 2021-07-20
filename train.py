@@ -11,7 +11,7 @@ import torch
 from torch.utils.data import DataLoader
 
 from engine import train_one_epoch
-from models import build_model
+from models.detr import build
 from dataset import selfDataset, collateFunction
 
 
@@ -24,7 +24,7 @@ def main(cfg):
     np.random.seed(seed)
     random.seed(seed)
 
-    model, criterion = build_model(cfg)
+    model, criterion = build(cfg)
     model.to(device)
 
     n_parameters = sum(p.numel()
