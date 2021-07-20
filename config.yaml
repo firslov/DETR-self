@@ -1,0 +1,84 @@
+# config.yaml
+---
+###
+# train mode
+###
+lr: !!float 1e-4
+lr_backbone: !!float 1e-5
+batch_size: 10
+weight_decay: !!float 1e-4
+epochs: 100
+lr_drop: 30
+clip_max_norm: 0.1
+# model parameters
+frozen_weights: Null
+# backbone
+backbone: resnet50
+dilation: False
+position_embedding: sine
+# transformer
+enc_layers: 6
+dec_layers: 6
+dim_feedforward: 2048
+hidden_dim: 256
+dropout: 0.1
+nheads: 8
+num_queries: 10
+pre_norm: False
+# loss
+aux_loss: False
+# matcher
+set_cost_class: 5.
+set_cost_bbox: 5.
+set_cost_giou: 10.
+# loss coefficeints
+dice_loss_coef: 5.
+bbox_loss_coef: 5.
+giou_loss_coef: 10.
+eos_coef: 0.5
+# dataset parameters
+train_dir: ../train
+output_dir: ''
+scaled_width: 800
+scaled_height: 800
+num_class: 10
+device: 'cuda'
+seed: 42
+resume: False
+start_epoch: 0
+num_workers: 3
+---
+###
+# evaluate mode
+###
+# backbone
+backbone: resnet50
+dilation: False
+position_embedding: sine
+# transformer
+enc_layers: 6
+dec_layers: 6
+dim_feedforward: 2048
+hidden_dim: 256
+dropout: 0.1
+nheads: 8
+num_queries: 10
+pre_norm: False
+# loss
+no_aux_loss: False
+# matcher
+set_cost_class: 1.
+set_cost_bbox: 5.
+set_cost_giou: 2.
+# loss coefficeints
+dice_loss_coef: 1.
+bbox_loss_coef: 5.
+giou_loss_coef: 2.
+eos_coef: 0.1
+# dataset parameters
+output_dir: ''
+device: 'cuda'
+seed: 42
+resume: False
+start_epoch: 0
+num_workers: 0

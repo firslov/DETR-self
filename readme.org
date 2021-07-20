@@ -1,0 +1,4 @@
+* DETR-self
+  - Based on [[https://github.com/facebookresearch/detr][Facebook repo]].
+  - Train DETR on my own dataset.
+  - Remove some functions.
