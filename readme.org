@@ -2,3 +2,14 @@
   - Based on [[https://github.com/facebookresearch/detr][Facebook repo]].
   - Train DETR on my own dataset.
   - Remove some functions.
+** Show
+*** Train
+  - loss
+    [[file:./figs/loss.png]]
+*** Inference
+  - fig 1
+    [[file:./figs/Figure_1.png]]
+  - fig 2
+    [[file:./figs/Figure_2.png]]
+  - fig 3
+    [[file:./figs/Figure_3.png]]

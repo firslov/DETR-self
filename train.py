@@ -10,7 +10,7 @@ import numpy as np
 import torch
 from torch.utils.data import DataLoader
 
-from util.engine import train_one_epoch
+from util.engine import train_one_epoch, valid_one_epoch
 from models.detr import build
 from util.dataset import selfDataset, collateFunction
 
@@ -25,7 +25,6 @@ def main(cfg):
     random.seed(seed)
 
     model, criterion = build(cfg)
-    model.train()
     model.to(device)
 
     n_parameters = sum(p.numel()
@@ -49,6 +48,10 @@ def main(cfg):
         cfg['train_dir'], cfg['scaled_width'], cfg['scaled_height'], cfg['num_class'])
     dataLoader = DataLoader(dataset, batch_size=cfg['batch_size'], shuffle=True, collate_fn=collateFunction,
                             pin_memory=True, num_workers=cfg['num_workers'])
+    dataset_val = selfDataset(
+        cfg['val_dir'], cfg['scaled_width'], cfg['scaled_height'], cfg['num_class'])
+    dataLoader_val = DataLoader(dataset_val, batch_size=cfg['batch_size'], shuffle=True, collate_fn=collateFunction,
+                                pin_memory=True, num_workers=cfg['num_workers'])
     steps = int(dataset.__len__() / cfg['batch_size'])
 
     if cfg['frozen_weights'] is not None:
@@ -58,7 +61,7 @@ def main(cfg):
     output_dir = Path(cfg['output_dir'])
 
     if cfg['resume']:
-        checkpoint = torch.load(cfg['resume'], map_location='cpu')
+        checkpoint = torch.load(cfg['resume'], map_location='cuda')
         model.load_state_dict(checkpoint['model'])
 
         if 'optimizer' in checkpoint and 'lr_scheduler' in checkpoint and 'epoch' in checkpoint:
@@ -69,15 +72,23 @@ def main(cfg):
     print("Start training")
     start_time = time.time()
     for epoch in range(cfg['start_epoch'], cfg['epochs']):
-        loss_result = train_one_epoch(
-            model, criterion, dataLoader, optimizer, device, epoch, steps,
+        loss_train = train_one_epoch(
+            model, criterion, dataLoader, optimizer, device,
             cfg['clip_max_norm'])
         lr_scheduler.step()
 
-        if cfg['output_dir']:
-            with (output_dir / "log.txt").open("a") as f:
-                f.write(json.dumps("Epoch: {}, Loss: {}".format(
-                    epoch, loss_result)) + "\n")
+        with torch.no_grad():
+            loss_val = valid_one_epoch(model, criterion, dataLoader_val, device)
+
+        print("Epoch: {}, Avarge Train Loss: {:.2f}, Avarge Valid Loss: {:.2f}".format(epoch, loss_train, loss_val))
+
+        with (output_dir / "log.txt").open('a') as f:
+            f.write("Epoch: {}, Train_Loss: {}".format(
+                epoch, loss_train) + "\n" + "Epoch: {}, Valid_Loss: {}".format(epoch, loss_val) + "\n")
+
+        with (output_dir / "log.csv").open('ab') as f:
+            np.savetxt(f, np.array(
+                [[epoch, loss_train, loss_val]]), delimiter=",")
 
     torch.save({
         'model': model.state_dict(),

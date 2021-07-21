@@ -29,7 +29,7 @@ detr.load_state_dict(torch.load(
     '{}/wt.pt'.format(cfg['output_dir']), map_location='cpu'))
 detr.eval()
 
-url = '../train/000300.jpg'
+url = '../train/000280.jpg'
 im = Image.open(url)
 
 scores, boxes = detect(im, detr, transform)

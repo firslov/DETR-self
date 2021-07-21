@@ -6,7 +6,7 @@
 mode: train
 lr: !!float 1e-4
 lr_backbone: !!float 1e-5
-batch_size: 10
+batch_size: 5
 weight_decay: !!float 1e-4
 epochs: 300
 lr_drop: 200
@@ -39,20 +39,22 @@ giou_loss_coef: 5.
 eos_coef: 0.1
 # dataset parameters
 train_dir: ../train
+val_dir: ../valid
 output_dir: ./output
 scaled_width: 800
 scaled_height: 800
 num_class: 10
 device: 'cuda'
 seed: 42
-resume: False
+resume: False # ./output/checkpoint.pth
 start_epoch: 0
-num_workers: 3
+num_workers: 4
 ---
 ###
 # evaluate mode
 ###
 mode: eval
+output_dir: ./output
 # backbone
 backbone: resnet50
 dilation: False
