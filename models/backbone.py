@@ -110,7 +110,7 @@ class Joiner(nn.Sequential):
 
 def build_backbone(cfg):
     position_embedding = build_position_encoding(cfg)
-    train_backbone = cfg['mode']=='train' and not cfg['resume']
+    train_backbone = cfg['mode'] == 'train' and not cfg['resume']
     backbone = Backbone(cfg['backbone'], train_backbone, cfg['dilation'])
     model = Joiner(backbone, position_embedding)
     model.num_channels = backbone.num_channels

@@ -41,8 +41,8 @@ def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
             torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm)
         optimizer.step()
 
-    print("giou_loss:", loss_dict['loss_giou'].item())
-    print("cls_loss: ", loss_dict['loss_ce'].item())
-    print("bbox_loss:", loss_dict['loss_bbox'].item())
+    # print("giou_loss:", loss_dict['loss_giou'].item())
+    # print("cls_loss: ", loss_dict['loss_ce'].item())
+    # print("bbox_loss:", loss_dict['loss_bbox'].item())
 
     return loss_value

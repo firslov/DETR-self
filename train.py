@@ -25,6 +25,7 @@ def main(cfg):
     random.seed(seed)
 
     model, criterion = build(cfg)
+    model.train()
     model.to(device)
 
     n_parameters = sum(p.numel()
@@ -44,7 +45,8 @@ def main(cfg):
     lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, cfg['lr_drop'])
 
     # load data
-    dataset = selfDataset(cfg['train_dir'], cfg['scaled_width'], cfg['scaled_height'], cfg['num_class'])
+    dataset = selfDataset(
+        cfg['train_dir'], cfg['scaled_width'], cfg['scaled_height'], cfg['num_class'])
     dataLoader = DataLoader(dataset, batch_size=cfg['batch_size'], shuffle=True, collate_fn=collateFunction,
                             pin_memory=True, num_workers=cfg['num_workers'])
     steps = int(dataset.__len__() / cfg['batch_size'])
@@ -71,24 +73,19 @@ def main(cfg):
             model, criterion, dataLoader, optimizer, device, epoch, steps,
             cfg['clip_max_norm'])
         lr_scheduler.step()
-        if cfg['output_dir']:
-            checkpoint_paths = [output_dir / 'checkpoint.pth']
-            # extra checkpoint before LR drop and every 100 epochs
-            if (epoch + 1) % cfg['lr_drop'] == 0 or (epoch + 1) % 100 == 0:
-                checkpoint_paths.append(
-                    output_dir / f'checkpoint{epoch:04}.pth')
-            for checkpoint_path in checkpoint_paths:
-                torch.save({
-                    'model': model.state_dict(),
-                    'optimizer': optimizer.state_dict(),
-                    'lr_scheduler': lr_scheduler.state_dict(),
-                    'epoch': epoch,
-                    'cfgs': cfg,
-                }, checkpoint_path)
 
         if cfg['output_dir']:
             with (output_dir / "log.txt").open("a") as f:
-                f.write(json.dumps(loss_result) + "\n")
+                f.write(json.dumps("Epoch: {}, Loss: {}".format(
+                    epoch, loss_result)) + "\n")
+
+    torch.save({
+        'model': model.state_dict(),
+        'optimizer': optimizer.state_dict(),
+        'lr_scheduler': lr_scheduler.state_dict(),
+        'epoch': epoch,
+        'cfgs': cfg,
+    }, '{}/checkpoint.pth'.format(output_dir))
 
     total_time = time.time() - start_time
     total_time_str = str(datetime.timedelta(seconds=int(total_time)))
