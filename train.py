@@ -10,9 +10,9 @@ import numpy as np
 import torch
 from torch.utils.data import DataLoader
 
-from engine import train_one_epoch
+from util.engine import train_one_epoch
 from models.detr import build
-from dataset import selfDataset, collateFunction
+from util.dataset import selfDataset, collateFunction
 
 
 def main(cfg):
@@ -89,12 +89,12 @@ def main(cfg):
 
     total_time = time.time() - start_time
     total_time_str = str(datetime.timedelta(seconds=int(total_time)))
-    torch.save(model.state_dict(), 'wt.pt')
+    torch.save(model.state_dict(), '{}/wt.pt'.format(cfg['output_dir']))
     print('Training time {}'.format(total_time_str))
 
 
 if __name__ == '__main__':
-    with open('config.yaml', 'r') as loadfile:
+    with open('config/cfg.yaml', 'r') as loadfile:
         cfg = yaml.load_all(loadfile)
         cfg_all = [x for x in cfg]
 

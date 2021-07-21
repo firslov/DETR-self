@@ -9,7 +9,7 @@ import torchvision.transforms as T
 torch.set_grad_enabled(False)
 
 
-with open('config.yaml', 'r') as loadfile:
+with open('config/cfg.yaml', 'r') as loadfile:
     cfg = yaml.load_all(loadfile)
     cfg_all = [x for x in cfg]
 
@@ -25,7 +25,8 @@ transform = T.Compose([
 
 # build model
 detr = build_evaluate(cfg)
-detr.load_state_dict(torch.load('wt.pt', map_location='cpu'))
+detr.load_state_dict(torch.load(
+    '{}/wt.pt'.format(cfg['output_dir']), map_location='cpu'))
 detr.eval()
 
 url = '../train/000300.jpg'
