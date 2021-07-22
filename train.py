@@ -1,7 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import yaml
 import datetime
-import json
 import random
 import time
 from pathlib import Path
@@ -52,7 +51,7 @@ def main(cfg):
         cfg['val_dir'], cfg['scaled_width'], cfg['scaled_height'], cfg['num_class'])
     dataLoader_val = DataLoader(dataset_val, batch_size=cfg['batch_size'], shuffle=True, collate_fn=collateFunction,
                                 pin_memory=True, num_workers=cfg['num_workers'])
-    steps = int(dataset.__len__() / cfg['batch_size'])
+    # steps = int(dataset.__len__() / cfg['batch_size'])
 
     if cfg['frozen_weights'] is not None:
         checkpoint = torch.load(cfg['frozen_weights'], map_location='cpu')
@@ -94,7 +93,7 @@ def main(cfg):
         'model': model.state_dict(),
         'optimizer': optimizer.state_dict(),
         'lr_scheduler': lr_scheduler.state_dict(),
-        'epoch': epoch,
+        'epoch': cfg['epochs'],
         'cfgs': cfg,
     }, '{}/checkpoint.pth'.format(output_dir))
 
@@ -106,13 +105,13 @@ def main(cfg):
 
 if __name__ == '__main__':
     with open('config/cfg.yaml', 'r') as loadfile:
-        cfg = yaml.load_all(loadfile)
-        cfg_all = [x for x in cfg]
+        config = yaml.load_all(loadfile, Loader=yaml.FullLoader)
+        config_all = [x for x in config]
 
     # train mode
-    cfg = cfg_all[0]
+    config = config_all[0]
 
-    if cfg['output_dir']:
-        Path(cfg['output_dir']).mkdir(parents=True, exist_ok=True)
+    if config['output_dir']:
+        Path(config['output_dir']).mkdir(parents=True, exist_ok=True)
 
-    main(cfg)
+    main(config)

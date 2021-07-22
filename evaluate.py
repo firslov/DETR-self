@@ -10,7 +10,7 @@ torch.set_grad_enabled(False)
 
 
 with open('config/cfg.yaml', 'r') as loadfile:
-    cfg = yaml.load_all(loadfile)
+    cfg = yaml.load_all(loadfile, Loader=yaml.FullLoader)
     cfg_all = [x for x in cfg]
 
 # evaluate mode
