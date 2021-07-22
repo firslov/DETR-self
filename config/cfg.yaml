@@ -38,8 +38,8 @@ bbox_loss_coef: 5.
 giou_loss_coef: 5.
 eos_coef: 0.1
 # dataset parameters
-train_dir: ../train
-val_dir: ../valid
+train_dir: ../Dataset/trafic/train
+val_dir: ../Dataset/trafic/valid
 output_dir: ./output
 scaled_width: 800
 scaled_height: 800
